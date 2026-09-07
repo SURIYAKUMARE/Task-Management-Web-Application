@@ -20,7 +20,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Tag,
-  Flag,
   RotateCcw,
 } from "lucide-react";
 
@@ -47,17 +46,17 @@ export function TaskDetailsModal({
   const overdue = isTaskOverdue(task);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-fade-in">
       <div
-        className="w-full max-w-lg rounded-3xl bg-card border border-border shadow-2xl overflow-hidden animate-fade-in"
+        className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-fade-in text-slate-900 dark:text-slate-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border/70">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
           <div className="flex items-center gap-2">
             <span
               className={cn(
-                "px-2.5 py-0.5 rounded-full text-xs font-semibold border uppercase tracking-wider",
+                "px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase tracking-wider",
                 getPriorityBadgeColor(task.priority)
               )}
             >
@@ -65,7 +64,7 @@ export function TaskDetailsModal({
             </span>
             <span
               className={cn(
-                "px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize",
+                "px-2.5 py-0.5 rounded-full text-xs font-semibold border capitalize",
                 getStatusBadgeColor(task.status)
               )}
             >
@@ -74,8 +73,9 @@ export function TaskDetailsModal({
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -86,14 +86,16 @@ export function TaskDetailsModal({
         <div className="p-6 space-y-5">
           {/* Title */}
           <div>
-            <h3 className={cn(
-              "text-xl font-bold tracking-tight text-foreground leading-snug",
-              isCompleted && "line-through text-muted-foreground"
-            )}>
+            <h3
+              className={cn(
+                "text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug",
+                isCompleted && "line-through text-slate-400 dark:text-slate-500"
+              )}
+            >
               {task.title}
             </h3>
             {overdue && !isCompleted && (
-              <div className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full">
+              <div className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-red-600 dark:text-red-400 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">
                 <AlertCircle className="w-3.5 h-3.5" />
                 This task is overdue
               </div>
@@ -102,62 +104,65 @@ export function TaskDetailsModal({
 
           {/* Description */}
           <div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Description
             </span>
-            <p className="mt-1.5 text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed bg-muted/30 p-3.5 rounded-2xl border border-border/50">
+            <p className="mt-1.5 text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/60">
               {task.description || "No description provided."}
             </p>
           </div>
 
           {/* Metadata Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-            <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-              <span className="text-muted-foreground block text-[10px] uppercase font-semibold flex items-center gap-1">
-                <Tag className="w-3 h-3 text-primary" /> Category
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold flex items-center gap-1">
+                <Tag className="w-3 h-3 text-indigo-500" /> Category
               </span>
-              <span className={cn(
-                "mt-1 inline-block px-2 py-0.5 rounded-md font-medium text-xs border",
-                getCategoryBadgeColor(task.category)
-              )}>
+              <span
+                className={cn(
+                  "mt-1.5 inline-block px-2 py-0.5 rounded-md font-semibold text-xs border",
+                  getCategoryBadgeColor(task.category)
+                )}
+              >
                 {task.category}
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-              <span className="text-muted-foreground block text-[10px] uppercase font-semibold flex items-center gap-1">
-                <Calendar className="w-3 h-3 text-primary" /> Due Date
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-indigo-500" /> Due Date
               </span>
-              <span className="mt-1 inline-block font-semibold text-foreground">
+              <span className="mt-1.5 inline-block font-bold text-slate-900 dark:text-white">
                 {task.due_date ? formatDate(task.due_date) : "Not set"}
               </span>
             </div>
 
-            <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-              <span className="text-muted-foreground block text-[10px] uppercase font-semibold flex items-center gap-1">
-                <Clock className="w-3 h-3 text-primary" /> Due Time
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold flex items-center gap-1">
+                <Clock className="w-3 h-3 text-indigo-500" /> Due Time
               </span>
-              <span className="mt-1 inline-block font-semibold text-foreground">
+              <span className="mt-1.5 inline-block font-bold text-slate-900 dark:text-white">
                 {task.due_time ? formatTime(task.due_time) : "Not set"}
               </span>
             </div>
           </div>
 
           {/* Timestamps */}
-          <div className="pt-2 border-t border-border/60 flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-muted-foreground gap-1">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-400 gap-1">
             <span>Created: {new Date(task.created_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}</span>
             <span>Last Updated: {new Date(task.updated_at).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" })}</span>
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-border/70 bg-muted/20 flex flex-wrap items-center justify-between gap-2">
+        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex flex-wrap items-center justify-between gap-2">
           <button
+            type="button"
             onClick={() => {
               onClose();
               onDelete(task);
             }}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl text-red-600 hover:bg-red-500/10 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl text-red-600 dark:text-red-400 hover:bg-red-500/10 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
             <span>Delete Task</span>
@@ -165,26 +170,28 @@ export function TaskDetailsModal({
 
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => {
                 onClose();
                 onEdit(task);
               }}
-              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl border border-border bg-card hover:bg-muted text-foreground transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors shadow-sm"
             >
               <Edit2 className="w-3.5 h-3.5" />
               <span>Edit Task</span>
             </button>
 
             <button
+              type="button"
               onClick={() => {
                 onToggleComplete(task);
                 onClose();
               }}
               className={cn(
-                "flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl transition-all shadow-xs",
+                "flex items-center gap-1.5 px-5 py-2 text-xs font-bold rounded-xl transition-all shadow-md",
                 isCompleted
-                  ? "bg-muted text-foreground hover:bg-muted/80"
-                  : "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-600/20"
+                  ? "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-300"
+                  : "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:opacity-90 shadow-emerald-600/20"
               )}
             >
               {isCompleted ? (

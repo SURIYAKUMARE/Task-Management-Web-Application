@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 220 33% 98%;
+    --background: 210 40% 98%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -14,7 +14,7 @@
     --popover-foreground: 222 47% 11%;
 
     --primary: 239 84% 67%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -33,23 +33,23 @@
     --background: 224 71% 4%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 8%;
+    --card: 222 47% 10%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 8%;
+    --popover: 222 47% 10%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 239 84% 67%;
-    --primary-foreground: 222 47% 11%;
+    --primary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 14%;
+    --muted: 217.2 32.6% 16%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 14%;
+    --accent: 217.2 32.6% 16%;
     --accent-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 20%;
+    --input: 217.2 32.6% 20%;
     --ring: 239 84% 67%;
   }
 }
@@ -80,7 +80,6 @@
   background: rgba(156, 163, 175, 0.7);
 }
 
-/* Hide scrollbar for tabs navigation */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }

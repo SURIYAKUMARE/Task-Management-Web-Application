@@ -34,24 +34,24 @@ export function TaskRow({
   return (
     <div
       className={cn(
-        "group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-card border transition-all duration-200 hover:shadow-sm",
+        "group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-white dark:bg-slate-900 border transition-all duration-200 hover:shadow-sm",
         isCompleted
-          ? "border-border/50 bg-muted/20 opacity-80"
+          ? "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 opacity-80"
           : overdue
-          ? "border-red-500/30 bg-red-500/[0.02]"
-          : "border-border/80 hover:border-border"
+          ? "border-red-300 dark:border-red-900/50"
+          : "border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-800"
       )}
     >
       {/* Left: Checkbox + Title + Description */}
-      <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+      <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
         <button
           type="button"
           onClick={() => onToggleComplete(task)}
           className={cn(
-            "mt-0.5 sm:mt-0 w-5 h-5 rounded-md border flex items-center justify-center transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-primary/40",
+            "mt-0.5 sm:mt-0 w-5 h-5 rounded-lg border flex items-center justify-center transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-500/30",
             isCompleted
-              ? "bg-emerald-500 border-emerald-500 text-white"
-              : "border-muted-foreground/40 hover:border-primary hover:bg-primary/10 text-transparent"
+              ? "bg-emerald-500 border-emerald-500 text-white shadow-xs"
+              : "border-slate-300 dark:border-slate-600 hover:border-indigo-500 text-transparent"
           )}
           aria-label={isCompleted ? "Mark incomplete" : "Mark completed"}
         >
@@ -65,16 +65,16 @@ export function TaskRow({
           <div className="flex items-center gap-2">
             <h4
               className={cn(
-                "text-sm font-semibold tracking-tight transition-colors truncate",
+                "text-sm font-bold tracking-tight transition-colors truncate",
                 isCompleted
-                  ? "line-through text-muted-foreground"
-                  : "text-foreground group-hover:text-primary"
+                  ? "line-through text-slate-400 dark:text-slate-500"
+                  : "text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
               )}
             >
               {task.title}
             </h4>
             {overdue && !isCompleted && (
-              <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400">
+              <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
                 <AlertCircle className="w-3 h-3" />
                 Overdue
               </span>
@@ -82,7 +82,7 @@ export function TaskRow({
           </div>
 
           {task.description && (
-            <p className="text-xs text-muted-foreground truncate max-w-xl mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xl mt-0.5 font-normal">
               {task.description}
             </p>
           )}
@@ -90,11 +90,11 @@ export function TaskRow({
       </div>
 
       {/* Right: Badges, Due Date, and Actions */}
-      <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border/50">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-1.5">
           <span
             className={cn(
-              "px-2 py-0.5 rounded-full text-[10px] font-semibold border uppercase tracking-wider",
+              "px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider",
               getPriorityBadgeColor(task.priority)
             )}
           >
@@ -102,7 +102,7 @@ export function TaskRow({
           </span>
           <span
             className={cn(
-              "hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-medium border",
+              "hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold border",
               getCategoryBadgeColor(task.category)
             )}
           >
@@ -110,7 +110,7 @@ export function TaskRow({
           </span>
           <span
             className={cn(
-              "px-2 py-0.5 rounded-full text-[10px] font-medium border capitalize",
+              "px-2.5 py-0.5 rounded-full text-[10px] font-semibold border capitalize",
               getStatusBadgeColor(task.status)
             )}
           >
@@ -119,14 +119,14 @@ export function TaskRow({
         </div>
 
         {task.due_date && (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className={overdue && !isCompleted ? "text-red-500 font-semibold" : ""}>
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <span className={overdue && !isCompleted ? "text-red-500 font-bold" : "font-medium"}>
               {formatDate(task.due_date)}
             </span>
             {task.due_time && (
-              <span className="hidden md:inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                <Clock className="w-3 h-3" />
+              <span className="hidden md:inline-flex items-center gap-1 text-[11px] font-medium">
+                <Clock className="w-3 h-3 text-slate-400" />
                 {formatTime(task.due_time)}
               </span>
             )}
@@ -135,24 +135,27 @@ export function TaskRow({
 
         <div className="flex items-center gap-1">
           <button
+            type="button"
             onClick={() => onViewDetails(task)}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="View Details"
             aria-label="View Details"
           >
             <Eye className="w-3.5 h-3.5" />
           </button>
           <button
+            type="button"
             onClick={() => onEdit(task)}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors"
             title="Edit Task"
             aria-label="Edit Task"
           >
             <Edit2 className="w-3.5 h-3.5" />
           </button>
           <button
+            type="button"
             onClick={() => onDelete(task)}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-red-600 hover:bg-red-500/10 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
             title="Delete Task"
             aria-label="Delete Task"
           >

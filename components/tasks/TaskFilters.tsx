@@ -57,8 +57,8 @@ export function TaskFilters({
 
   return (
     <div className="flex flex-wrap items-center gap-2 pt-1">
-      <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mr-1">
-        <Filter className="w-3.5 h-3.5" />
+      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 mr-1">
+        <Filter className="w-3.5 h-3.5 text-indigo-500" />
         <span>Filters:</span>
       </div>
 
@@ -66,10 +66,10 @@ export function TaskFilters({
       <select
         value={filters.status}
         onChange={(e) => onFilterChange({ status: e.target.value as TaskStatus | "all" })}
-        className="px-2.5 py-1.5 rounded-xl bg-card border border-border text-xs font-medium text-foreground focus:outline-none cursor-pointer hover:bg-muted/40 transition-colors shadow-xs"
+        className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-xs"
       >
         {STATUSES.map((st) => (
-          <option key={st.value} value={st.value} className="bg-card">
+          <option key={st.value} value={st.value} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
             {st.label}
           </option>
         ))}
@@ -79,10 +79,10 @@ export function TaskFilters({
       <select
         value={filters.priority}
         onChange={(e) => onFilterChange({ priority: e.target.value as TaskPriority | "all" })}
-        className="px-2.5 py-1.5 rounded-xl bg-card border border-border text-xs font-medium text-foreground focus:outline-none cursor-pointer hover:bg-muted/40 transition-colors shadow-xs"
+        className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-xs"
       >
         {PRIORITIES.map((p) => (
-          <option key={p.value} value={p.value} className="bg-card">
+          <option key={p.value} value={p.value} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
             {p.label}
           </option>
         ))}
@@ -92,10 +92,10 @@ export function TaskFilters({
       <select
         value={filters.category}
         onChange={(e) => onFilterChange({ category: e.target.value })}
-        className="px-2.5 py-1.5 rounded-xl bg-card border border-border text-xs font-medium text-foreground focus:outline-none cursor-pointer hover:bg-muted/40 transition-colors shadow-xs"
+        className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-xs"
       >
         {CATEGORIES.map((cat) => (
-          <option key={cat} value={cat === "All" ? "all" : cat} className="bg-card">
+          <option key={cat} value={cat === "All" ? "all" : cat} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
             {cat === "All" ? "All Categories" : cat}
           </option>
         ))}
@@ -105,10 +105,10 @@ export function TaskFilters({
       <select
         value={filters.dateFilter}
         onChange={(e) => onFilterChange({ dateFilter: e.target.value as DateFilter })}
-        className="px-2.5 py-1.5 rounded-xl bg-card border border-border text-xs font-medium text-foreground focus:outline-none cursor-pointer hover:bg-muted/40 transition-colors shadow-xs"
+        className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-xs"
       >
         {DATE_FILTERS.map((d) => (
-          <option key={d.value} value={d.value} className="bg-card">
+          <option key={d.value} value={d.value} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
             {d.label}
           </option>
         ))}
@@ -117,11 +117,12 @@ export function TaskFilters({
       {/* Reset Button */}
       {isAnyFilterActive && (
         <button
+          type="button"
           onClick={onResetFilters}
-          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           title="Reset all active filters"
         >
-          <RotateCcw className="w-3 h-3" />
+          <RotateCcw className="w-3.5 h-3.5" />
           <span>Reset</span>
         </button>
       )}

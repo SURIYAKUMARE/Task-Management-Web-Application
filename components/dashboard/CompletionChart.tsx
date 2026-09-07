@@ -27,8 +27,8 @@ export function CompletionChart({ data, completionRate }: CompletionChartProps) 
 
   if (!mounted) {
     return (
-      <div className="h-72 rounded-2xl bg-card border border-border/80 p-6 flex items-center justify-center">
-        <span className="text-xs text-muted-foreground animate-pulse">Loading analytics...</span>
+      <div className="h-72 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-center shadow-xs">
+        <span className="text-xs text-slate-400 animate-pulse">Loading analytics...</span>
       </div>
     );
   }
@@ -36,26 +36,26 @@ export function CompletionChart({ data, completionRate }: CompletionChartProps) 
   const totalCompletedInWeek = data.reduce((acc, curr) => acc + curr.completed, 0);
 
   return (
-    <div className="rounded-2xl bg-card border border-border/80 p-6 shadow-xs">
+    <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs text-slate-900 dark:text-slate-100">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
         <div>
-          <h3 className="font-bold text-base text-foreground flex items-center gap-2">
+          <h3 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
             <span>Productivity Velocity</span>
-            <span className="p-1 rounded-md bg-primary/10 text-primary">
-              <TrendingUp className="w-3.5 h-3.5" />
+            <span className="p-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
+              <TrendingUp className="w-4 h-4" />
             </span>
           </h3>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Tasks completed per day over the past 7 days
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-primary/10 text-primary text-xs font-semibold">
-            <Award className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-200 dark:border-indigo-800/40">
+            <Award className="w-3.5 h-3.5 text-indigo-500" />
             <span>{totalCompletedInWeek} Done This Week</span>
           </div>
-          <div className="text-xs text-muted-foreground px-2 py-1 bg-muted rounded-xl font-medium">
+          <div className="text-xs text-slate-600 dark:text-slate-400 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold border border-slate-200 dark:border-slate-700">
             {completionRate}% Overall Rate
           </div>
         </div>
@@ -70,28 +70,26 @@ export function CompletionChart({ data, completionRate }: CompletionChartProps) 
                 <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border/50" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.2} vertical={false} />
             <XAxis
               dataKey="day"
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 11, fill: "currentColor" }}
-              className="text-muted-foreground"
+              tick={{ fontSize: 11, fill: "#64748b" }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
               allowDecimals={false}
-              tick={{ fontSize: 11, fill: "currentColor" }}
-              className="text-muted-foreground"
+              tick={{ fontSize: 11, fill: "#64748b" }}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "var(--card)",
-                borderColor: "var(--border)",
-                borderRadius: "12px",
-                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-                color: "var(--foreground)",
+                backgroundColor: "#0f172a",
+                borderColor: "#334155",
+                borderRadius: "14px",
+                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
+                color: "#ffffff",
                 fontSize: "12px",
               }}
               formatter={(value: number) => [`${value} tasks`, "Completed"]}
@@ -101,7 +99,7 @@ export function CompletionChart({ data, completionRate }: CompletionChartProps) 
               type="monotone"
               dataKey="completed"
               stroke="#6366f1"
-              strokeWidth={2.5}
+              strokeWidth={3}
               fillOpacity={1}
               fill="url(#completedGradient)"
             />

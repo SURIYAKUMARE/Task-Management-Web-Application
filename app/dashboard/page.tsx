@@ -26,7 +26,6 @@ import {
   Sparkles,
   Calendar as CalendarIcon,
   AlertTriangle,
-  Bell,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -175,7 +174,7 @@ export default function DashboardPage() {
     .slice(0, 4);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
+    <div className="min-h-screen flex flex-col bg-slate-50/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       <Navbar
         onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
         isMobileMenuOpen={mobileMenuOpen}
@@ -195,18 +194,18 @@ export default function DashboardPage() {
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-8 pb-24 md:pb-8">
           {/* Welcome Greeting Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-primary/10 via-card to-indigo-500/10 p-5 sm:p-6 rounded-3xl border border-primary/20 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-50/80 via-white to-violet-50/80 dark:from-indigo-950/40 dark:via-slate-900 dark:to-violet-950/30 p-6 sm:p-8 rounded-3xl border border-indigo-200/80 dark:border-indigo-900/50 shadow-sm">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-1">
-                <Sparkles className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/70 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 text-xs font-bold mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
                 <span>Productivity Command Center</span>
               </div>
-              <h1 className="text-xl sm:text-3xl font-black tracking-tight text-foreground">
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                 {getTimeGreeting()}, {userName} 👋
               </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 font-medium">
                 Let&apos;s make today productive. You have{" "}
-                <span className="font-bold text-foreground">{stats.pending}</span> pending{" "}
+                <span className="font-bold text-slate-900 dark:text-white">{stats.pending}</span> pending{" "}
                 {stats.pending === 1 ? "task" : "tasks"}
                 {stats.overdue > 0 && (
                   <span className="text-red-500 font-bold ml-1">
@@ -217,13 +216,14 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 shrink-0">
               <button
+                type="button"
                 onClick={() => {
                   setTaskToEdit(null);
                   setIsCreateModalOpen(true);
                 }}
-                className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-semibold shadow-md shadow-primary/25 hover:opacity-95 transition-all active:scale-[0.98]"
+                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-xs sm:text-sm font-bold shadow-lg shadow-indigo-600/25 hover:scale-105 active:scale-95 transition-all"
               >
                 <PlusCircle className="w-4 h-4" />
                 <span>Create Task</span>
@@ -236,18 +236,18 @@ export default function DashboardPage() {
 
           {/* Overdue Banner if any */}
           {stats.overdue > 0 && (
-            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-fade-in">
-              <div className="flex items-center gap-2.5 text-red-600 dark:text-red-400 font-semibold">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
+            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-fade-in shadow-xs">
+              <div className="flex items-center gap-2.5 text-red-700 dark:text-red-300 font-bold">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
                 <span>
                   You have {stats.overdue} overdue {stats.overdue === 1 ? "task" : "tasks"} requiring immediate attention.
                 </span>
               </div>
               <Link
                 href="/tasks"
-                className="shrink-0 text-center px-3 py-1.5 rounded-xl bg-red-600 text-white font-semibold text-xs hover:bg-red-700 transition-colors"
+                className="shrink-0 text-center px-4 py-2 rounded-xl bg-red-600 text-white font-bold text-xs hover:bg-red-700 shadow-md shadow-red-600/20 transition-all"
               >
-                View Overdue
+                View Overdue Tasks
               </Link>
             </div>
           )}
@@ -278,18 +278,18 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-                  <CalendarIcon className="w-4 h-4 text-primary" />
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <CalendarIcon className="w-4 h-4 text-indigo-500" />
                   <span>Immediate Focus & Upcoming</span>
                 </h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
                   Tasks pending execution on your agenda
                 </p>
               </div>
 
               <Link
                 href="/tasks"
-                className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                className="flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
               >
                 <span>View All ({stats.total})</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -299,7 +299,7 @@ export default function DashboardPage() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[1, 2].map((i) => (
-                  <div key={i} className="h-36 rounded-2xl bg-card border border-border animate-pulse" />
+                  <div key={i} className="h-36 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 animate-pulse" />
                 ))}
               </div>
             ) : upcomingTasks.length === 0 ? (

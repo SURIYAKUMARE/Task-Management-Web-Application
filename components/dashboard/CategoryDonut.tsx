@@ -20,7 +20,6 @@ export function CategoryDonut({ tasks }: CategoryDonutProps) {
 
   if (!mounted) return null;
 
-  // Group by category
   const categoryCounts: Record<string, number> = {};
   tasks.forEach((task) => {
     const cat = task.category || "General";
@@ -34,22 +33,23 @@ export function CategoryDonut({ tasks }: CategoryDonutProps) {
 
   if (data.length === 0) {
     return (
-      <div className="rounded-2xl bg-card border border-border/80 p-6 shadow-xs flex flex-col items-center justify-center h-full min-h-[260px]">
-        <p className="text-xs text-muted-foreground">No category data yet</p>
+      <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs flex flex-col items-center justify-center h-full min-h-[260px] text-slate-900 dark:text-slate-100">
+        <PieIcon className="w-8 h-8 text-slate-300 dark:text-slate-600 mb-2" />
+        <p className="text-xs font-semibold text-slate-400">No category data yet</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl bg-card border border-border/80 p-6 shadow-xs flex flex-col justify-between">
+    <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs flex flex-col justify-between text-slate-900 dark:text-slate-100">
       <div>
-        <h3 className="font-bold text-base text-foreground flex items-center gap-2">
+        <h3 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
           <span>Category Distribution</span>
-          <span className="p-1 rounded-md bg-cyan-500/10 text-cyan-500">
-            <PieIcon className="w-3.5 h-3.5" />
+          <span className="p-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400">
+            <PieIcon className="w-4 h-4" />
           </span>
         </h3>
-        <p className="text-xs text-muted-foreground mt-0.5">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
           Workload breakdown across focus areas
         </p>
       </div>
@@ -72,11 +72,11 @@ export function CategoryDonut({ tasks }: CategoryDonutProps) {
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: "var(--card)",
-                borderColor: "var(--border)",
-                borderRadius: "12px",
+                backgroundColor: "#0f172a",
+                borderColor: "#334155",
+                borderRadius: "14px",
                 fontSize: "12px",
-                color: "var(--foreground)",
+                color: "#ffffff",
               }}
               formatter={(value: number) => [`${value} tasks`, "Count"]}
             />
@@ -84,15 +84,15 @@ export function CategoryDonut({ tasks }: CategoryDonutProps) {
         </ResponsiveContainer>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/50">
+      <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
         {data.slice(0, 4).map((item, idx) => (
           <div key={item.name} className="flex items-center gap-2 text-xs">
             <span
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: COLORS[idx % COLORS.length] }}
             />
-            <span className="text-muted-foreground truncate">{item.name}</span>
-            <span className="font-semibold text-foreground ml-auto">{item.value}</span>
+            <span className="text-slate-500 dark:text-slate-400 truncate">{item.name}</span>
+            <span className="font-bold text-slate-900 dark:text-white ml-auto">{item.value}</span>
           </div>
         ))}
       </div>
