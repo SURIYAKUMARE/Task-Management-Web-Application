@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { TaskService } from "@/lib/task-service";
+import { NotificationService } from "@/lib/notification-service";
 import {
   Task,
   TaskViewMode,
@@ -14,6 +15,7 @@ import {
 } from "@/types";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { TaskRow } from "@/components/tasks/TaskRow";
 import { TaskKanban } from "@/components/tasks/TaskKanban";
@@ -67,6 +69,7 @@ export default function TasksPage() {
       setLoading(true);
       const userTasks = await TaskService.getTasks(user.id);
       setTasks(userTasks);
+      NotificationService.checkTaskReminders(userTasks);
     } catch (err) {
       console.error("Error loading tasks", err);
       toast.error("Failed to load tasks");
@@ -92,7 +95,6 @@ export default function TasksPage() {
     const isNowCompleted = task.status !== "completed";
     const newStatus: TaskStatus = isNowCompleted ? "completed" : "todo";
 
-    // Optimistic UI update
     setTasks((prev) =>
       prev.map((t) =>
         t.id === task.id
@@ -211,6 +213,8 @@ export default function TasksPage() {
       <Navbar
         onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
         isMobileMenuOpen={mobileMenuOpen}
+        tasks={tasks}
+        onSelectTask={(t) => setTaskToView(t)}
       />
 
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
@@ -224,7 +228,7 @@ export default function TasksPage() {
           onCloseMobile={() => setMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-6">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-6 pb-24 md:pb-8">
           {/* Header & Create Button */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -285,7 +289,6 @@ export default function TasksPage() {
               onClearFilters={handleResetFilters}
             />
           ) : viewMode === "list" ? (
-            /* List View */
             <div className="space-y-2.5 animate-fade-in">
               {filteredTasks.map((task) => (
                 <TaskRow
@@ -302,7 +305,6 @@ export default function TasksPage() {
               ))}
             </div>
           ) : viewMode === "grid" ? (
-            /* Grid View */
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
               {filteredTasks.map((task) => (
                 <TaskCard
@@ -319,7 +321,6 @@ export default function TasksPage() {
               ))}
             </div>
           ) : (
-            /* Kanban View */
             <div className="animate-fade-in">
               <TaskKanban
                 tasks={filteredTasks}
@@ -341,6 +342,15 @@ export default function TasksPage() {
           )}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <BottomNav
+        onOpenCreateTask={() => {
+          setTaskToEdit(null);
+          setModalDefaultStatus("todo");
+          setIsCreateModalOpen(true);
+        }}
+      />
 
       {/* Create / Edit Modal */}
       <TaskModal

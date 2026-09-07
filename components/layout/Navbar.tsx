@@ -6,9 +6,10 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { getTimeGreeting } from "@/lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
+import { NotificationCenter } from "../notifications/NotificationCenter";
+import { Task } from "@/types";
 import {
   CheckCircle2,
-  Bell,
   LogOut,
   User as UserIcon,
   Menu,
@@ -16,34 +17,34 @@ import {
   Calendar,
   LayoutDashboard,
   CheckSquare,
-  AlertTriangle,
-  Info,
 } from "lucide-react";
 import { toast } from "sonner";
 
 interface NavbarProps {
   onMobileMenuToggle?: () => void;
   isMobileMenuOpen?: boolean;
+  tasks?: Task[];
+  onSelectTask?: (task: Task) => void;
 }
 
-export function Navbar({ onMobileMenuToggle, isMobileMenuOpen }: NavbarProps) {
+export function Navbar({
+  onMobileMenuToggle,
+  isMobileMenuOpen,
+  tasks = [],
+  onSelectTask,
+}: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, profile, signOut, isConfigured } = useAuth();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const notificationRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setProfileDropdownOpen(false);
-      }
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setNotificationsOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -123,7 +124,7 @@ export function Navbar({ onMobileMenuToggle, isMobileMenuOpen }: NavbarProps) {
           </div>
 
           {/* Right: Dynamic Greeting + Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             {/* Dynamic user greeting for desktop */}
             <div className="hidden lg:flex flex-col text-right pr-2">
               <span className="text-xs font-semibold text-foreground">
@@ -134,65 +135,8 @@ export function Navbar({ onMobileMenuToggle, isMobileMenuOpen }: NavbarProps) {
               </span>
             </div>
 
-            {/* Notifications Popover */}
-            <div className="relative" ref={notificationRef}>
-              <button
-                onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="relative p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/70 transition-all border border-transparent hover:border-border focus:outline-none"
-                aria-label="View notifications"
-              >
-                <Bell className="w-4 h-4" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary ring-2 ring-card animate-pulse" />
-              </button>
-
-              {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-card border border-border shadow-xl py-3 z-50 animate-fade-in">
-                  <div className="px-4 pb-2 border-b border-border/60 flex items-center justify-between">
-                    <span className="font-semibold text-sm">Notifications</span>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                      2 Unread
-                    </span>
-                  </div>
-                  <div className="divide-y divide-border/40 max-h-72 overflow-y-auto">
-                    <div className="p-3.5 hover:bg-muted/50 transition-colors flex items-start gap-3">
-                      <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 shrink-0">
-                        <AlertTriangle className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-foreground">
-                          Task Deadline Approaching
-                        </p>
-                        <p className="text-[11px] text-muted-foreground mt-0.5">
-                          &quot;Finish AI/ML Project Deployment&quot; is scheduled soon.
-                        </p>
-                        <span className="text-[10px] text-muted-foreground mt-1 inline-block">
-                          Just now
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 hover:bg-muted/50 transition-colors flex items-start gap-3">
-                      <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0">
-                        <Info className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-foreground">
-                          Welcome to TaskFlow!
-                        </p>
-                        <p className="text-[11px] text-muted-foreground mt-0.5">
-                          {isConfigured
-                            ? "Connected to live Supabase PostgreSQL database."
-                            : "Running in local demo mode. Connect Supabase in .env.local for cloud sync."}
-                        </p>
-                        <span className="text-[10px] text-muted-foreground mt-1 inline-block">
-                          Today
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Enhanced Notifications Center */}
+            <NotificationCenter tasks={tasks} onSelectTask={onSelectTask} />
 
             {/* Theme Toggle */}
             <ThemeToggle />

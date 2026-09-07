@@ -4,9 +4,11 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { TaskService } from "@/lib/task-service";
+import { NotificationService } from "@/lib/notification-service";
 import { Task, TaskPriority, TaskCategory, TaskStatus } from "@/types";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { CalendarGrid } from "@/components/calendar/CalendarGrid";
 import { TaskModal } from "@/components/tasks/TaskModal";
 import { TaskDetailsModal } from "@/components/tasks/TaskDetailsModal";
@@ -44,6 +46,7 @@ export default function CalendarPage() {
       setLoading(true);
       const userTasks = await TaskService.getTasks(user.id);
       setTasks(userTasks);
+      NotificationService.checkTaskReminders(userTasks);
     } catch (err) {
       console.error("Error loading calendar tasks", err);
       toast.error("Failed to load tasks");
@@ -144,6 +147,8 @@ export default function CalendarPage() {
       <Navbar
         onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
         isMobileMenuOpen={mobileMenuOpen}
+        tasks={tasks}
+        onSelectTask={(t) => setTaskToView(t)}
       />
 
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
@@ -157,7 +162,7 @@ export default function CalendarPage() {
           onCloseMobile={() => setMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-6">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-6 pb-24 md:pb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2.5">
@@ -193,6 +198,15 @@ export default function CalendarPage() {
           )}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <BottomNav
+        onOpenCreateTask={() => {
+          setTaskToEdit(null);
+          setSelectedDate(undefined);
+          setIsCreateModalOpen(true);
+        }}
+      />
 
       {/* Create / Edit Modal */}
       <TaskModal

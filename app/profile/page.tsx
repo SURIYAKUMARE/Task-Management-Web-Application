@@ -4,8 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { TaskService } from "@/lib/task-service";
+import { NotificationService } from "@/lib/notification-service";
+import { Task } from "@/types";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { BottomNav } from "@/components/layout/BottomNav";
 import {
   User as UserIcon,
   Mail,
@@ -17,6 +20,8 @@ import {
   Award,
   Shield,
   Loader2,
+  Bell,
+  Volume2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -33,9 +38,13 @@ export default function ProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updatingPassword, setUpdatingPassword] = useState(false);
 
-  // Lifetime Stats
+  // Lifetime Stats & Tasks
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState({ total: 0, completed: 0, completionRate: 0 });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Notifications permission state
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission>("default");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -44,6 +53,8 @@ export default function ProfilePage() {
   }, [user, authLoading, router]);
 
   useEffect(() => {
+    setNotifPermission(NotificationService.getPermission());
+
     if (profile) {
       setFullName(profile.full_name || "");
       setAvatarUrl(profile.avatar_url || "");
@@ -53,9 +64,10 @@ export default function ProfilePage() {
     }
 
     if (user) {
-      TaskService.getTasks(user.id).then((tasks) => {
-        const total = tasks.length;
-        const completed = tasks.filter((t) => t.status === "completed").length;
+      TaskService.getTasks(user.id).then((fetchedTasks) => {
+        setTasks(fetchedTasks);
+        const total = fetchedTasks.length;
+        const completed = fetchedTasks.filter((t) => t.status === "completed").length;
         setStats({
           total,
           completed,
@@ -119,6 +131,24 @@ export default function ProfilePage() {
     }
   };
 
+  const handleEnableNotifications = async () => {
+    const granted = await NotificationService.requestPermission();
+    setNotifPermission(granted ? "granted" : "denied");
+    if (granted) {
+      toast.success("Device push notifications enabled!");
+    } else {
+      toast.error("Permission was not granted.");
+    }
+  };
+
+  const handleTestAlert = () => {
+    NotificationService.sendNotification(
+      "TaskFlow Device Notification 🚀",
+      "Task reminder alert system is active! You will be notified when your tasks are due."
+    );
+    toast.success("Test notification fired with sound! 🔔");
+  };
+
   const PRESET_AVATARS = [
     `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id || "user1"}`,
     "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
@@ -140,6 +170,7 @@ export default function ProfilePage() {
       <Navbar
         onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
         isMobileMenuOpen={mobileMenuOpen}
+        tasks={tasks}
       />
 
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
@@ -148,14 +179,14 @@ export default function ProfilePage() {
           onCloseMobile={() => setMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-8 pb-24 md:pb-8">
           <div>
             <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2.5">
               <UserIcon className="w-6 h-6 text-primary" />
               <span>Account Settings & Profile</span>
             </h1>
             <p className="text-xs text-muted-foreground mt-1">
-              Manage your personal identity, credentials, and track your all-time productivity record
+              Manage your personal identity, device alerts, credentials, and track your all-time productivity record
             </p>
           </div>
 
@@ -248,6 +279,50 @@ export default function ProfilePage() {
                 <span className="text-2xl font-black text-foreground">{stats.completionRate}%</span>
                 <p className="text-xs text-muted-foreground font-medium">Overall Completion Rate</p>
               </div>
+            </div>
+          </div>
+
+          {/* Device Notifications Settings Card */}
+          <div className="p-6 rounded-3xl bg-card border border-border/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="p-3 rounded-2xl bg-primary/10 text-primary shrink-0">
+                <Bell className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-foreground">
+                  Task Reminders & Notifications
+                </h3>
+                <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed max-w-md">
+                  Enable device push notifications and audible chimes for tasks due today and overdue deadlines.
+                </p>
+                <div className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold">
+                  <span className={`w-2 h-2 rounded-full ${notifPermission === "granted" ? "bg-emerald-500" : "bg-amber-500"}`} />
+                  <span className="text-muted-foreground">
+                    Status: <strong className="text-foreground capitalize">{notifPermission === "granted" ? "Active" : notifPermission}</strong>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              {notifPermission !== "granted" ? (
+                <button
+                  type="button"
+                  onClick={handleEnableNotifications}
+                  className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold shadow-md shadow-primary/20 hover:opacity-90 transition-all"
+                >
+                  Enable Notifications
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleTestAlert}
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 text-xs font-semibold transition-colors"
+                >
+                  <Volume2 className="w-4 h-4" />
+                  <span>Send Test Notification</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -386,6 +461,9 @@ export default function ProfilePage() {
           </div>
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <BottomNav />
     </div>
   );
 }

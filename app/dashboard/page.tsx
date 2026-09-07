@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { TaskService } from "@/lib/task-service";
+import { NotificationService } from "@/lib/notification-service";
 import { Task, TaskStats, DayCompletionData, TaskPriority, TaskCategory, TaskStatus } from "@/types";
 import { getTimeGreeting } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { StatsCards } from "@/components/dashboard/StatsCard";
 import { CompletionChart } from "@/components/dashboard/CompletionChart";
 import { CategoryDonut } from "@/components/dashboard/CategoryDonut";
@@ -23,8 +25,8 @@ import {
   ArrowRight,
   Sparkles,
   Calendar as CalendarIcon,
-  CheckCircle2,
   AlertTriangle,
+  Bell,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -68,6 +70,9 @@ export default function DashboardPage() {
       setTasks(userTasks);
       setStats(TaskService.calculateStats(userTasks));
       setChartData(TaskService.getWeeklyChartData(userTasks));
+
+      // Check task reminders & overdue alerts
+      NotificationService.checkTaskReminders(userTasks);
     } catch (err) {
       console.error("Failed to load dashboard tasks", err);
       toast.error("Failed to load tasks.");
@@ -174,6 +179,8 @@ export default function DashboardPage() {
       <Navbar
         onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
         isMobileMenuOpen={mobileMenuOpen}
+        tasks={tasks}
+        onSelectTask={(t) => setTaskToView(t)}
       />
 
       <div className="flex-1 flex max-w-7xl w-full mx-auto">
@@ -186,15 +193,15 @@ export default function DashboardPage() {
           onCloseMobile={() => setMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto space-y-8 pb-24 md:pb-8">
           {/* Welcome Greeting Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-primary/10 via-card to-indigo-500/10 p-6 rounded-3xl border border-primary/20 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-primary/10 via-card to-indigo-500/10 p-5 sm:p-6 rounded-3xl border border-primary/20 shadow-xs">
             <div>
               <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider mb-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Executive Productivity Hub</span>
+                <span>Productivity Command Center</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+              <h1 className="text-xl sm:text-3xl font-black tracking-tight text-foreground">
                 {getTimeGreeting()}, {userName} 👋
               </h1>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -210,13 +217,13 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={() => {
                   setTaskToEdit(null);
                   setIsCreateModalOpen(true);
                 }}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-semibold shadow-md shadow-primary/25 hover:opacity-95 transition-all active:scale-[0.98]"
+                className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-semibold shadow-md shadow-primary/25 hover:opacity-95 transition-all active:scale-[0.98]"
               >
                 <PlusCircle className="w-4 h-4" />
                 <span>Create Task</span>
@@ -229,7 +236,7 @@ export default function DashboardPage() {
 
           {/* Overdue Banner if any */}
           {stats.overdue > 0 && (
-            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-between gap-4 text-xs">
+            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-fade-in">
               <div className="flex items-center gap-2.5 text-red-600 dark:text-red-400 font-semibold">
                 <AlertTriangle className="w-4 h-4 shrink-0" />
                 <span>
@@ -238,7 +245,7 @@ export default function DashboardPage() {
               </div>
               <Link
                 href="/tasks"
-                className="shrink-0 px-3 py-1.5 rounded-xl bg-red-600 text-white font-semibold text-xs hover:bg-red-700 transition-colors"
+                className="shrink-0 text-center px-3 py-1.5 rounded-xl bg-red-600 text-white font-semibold text-xs hover:bg-red-700 transition-colors"
               >
                 View Overdue
               </Link>
@@ -322,6 +329,14 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <BottomNav
+        onOpenCreateTask={() => {
+          setTaskToEdit(null);
+          setIsCreateModalOpen(true);
+        }}
+      />
 
       {/* Create / Edit Modal */}
       <TaskModal
